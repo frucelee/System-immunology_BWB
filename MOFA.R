@@ -17,7 +17,7 @@ library(ggbeeswarm) # geom_quasirandom()
 ## Warning: replacing previous import 'DelayedArray::pnorm' by 'stats::pnorm'
 ## when loading 'MOFA2'
 library(MOFA2)
-mydata <- read.csv("D:\\meeting\\datanew\\all_T1T2.csv",header=T)
+mydata <- read.csv("D:\\datanew\\all_T1T2.csv",header=T)
 mydata <- mydata[,c(1:15,20:22,24:42,46:50,56:66,68,72,73:83,85,89,106,107:108,110:117,119,123,124:134,136,140,141:142,144,146:151,153,157,158,159,161:168,170,179,180,185,192,193,195:202,208,209:219,221,225,227,232,234,236,242)]
 mycols <- c('T1' = 'red', 'T2' = 'blue')
 #rm(CD40Lpos, BposUS, ALL, FACS, PRTcov)
