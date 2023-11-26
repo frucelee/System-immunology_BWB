@@ -1,15 +1,7 @@
 #Interdividual vs intraindividual
 rm(list=ls())
 set.seed(1234)
-#mydata <- read.csv("D:\\meeting\\datanew\\all_T1T2.csv",header=T)
-#mydata2<- mydata[mydata$Sampling %in% c("2"),]
-#namesID<-data.frame(mydata2[,3])
-#write.table(namesID, 'namesID.txt', quote = FALSE,row.names = FALSE)
-#tbl2<-read.csv("D:\\meeting\\datanew\\all_T1T2.csv",header=T)
-#tbl2<- tbl2[tbl2$Sampling %in% c("1"),]
-#tbl3<-read.table("namesID.txt",header=T)
-#data<-tbl2[match(tbl3$ID, tbl2$ID),]
-mydata <- read.csv("D:\\meeting\\datanew\\all_T1T2.csv",header=T)
+mydata <- read.csv("D:\\datanew\\all_T1T2.csv",header=T)
 mydata1<-mydata[,]
 mydata1$ID<-factor(mydata1$ID)
 mydata1$Sampling<-factor(mydata1$Sampling)
@@ -68,8 +60,8 @@ library(ggpubr)
 mydata3<-data.frame(mydata3)
 mydata3$p_of_model_adj<- p.adjust(mydata3$p_of_model, method = "bonferroni",
                                   n = length(mydata3$p_of_model))
-write.csv(mydata3, 'nature immunology.csv', quote = FALSE)
-mydata3 <- read.csv("nature immunology.csv",header=T)
+write.csv(mydata3, 'mydata.csv', quote = FALSE)
+mydata3 <- read.csv("mydata.csv",header=T)
 summary(mydata3$prop_attributed_to_ID)
 summary(mydata3$prop_attributed_to_sampling)
 summary(mydata3$r2_of_model)
@@ -92,7 +84,7 @@ P1<-ggplot(data = mydata3,mapping = aes(x=X,y=r2_of_model)) + geom_point(shape=7
 
 #Code for panel F.  PCA
 # Correlation matrix:
-mydata <- read.csv("D:\\meeting\\datanew\\all_T1T2.csv",header=T)
+mydata <- read.csv("D:\\datanew\\all_T1T2.csv",header=T)
 mydata[,15:285] <- log(mydata[15:285],2)
 mydata$Sampling<-factor(mydata$Sampling,levels = c("1","2"),labels = c("T1","T2"))
 
