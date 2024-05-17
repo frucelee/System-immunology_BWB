@@ -12,7 +12,7 @@ Cyto_serum<-data[,c(6:8)]
 FACS<-data[,c(9:29)]
 Stim_cyto<-data[,c(30:144)]
 ##correlation among stimulated cytokines, similar used to estimate other correlations.
-phylum_corr <-corr.test(Stim_cyto, use = "pairwise.complete.obs",
+phylum_corr <-corr.test(Stim_cyto, use = "pairwise",
                         method = "spearman",adjust="none")
 Corr_cyto_R<-phylum_corr$r
 Corr_cyto_P<-phylum_corr$p
