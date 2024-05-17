@@ -6,81 +6,8 @@
 library(psych)
 library(ggplot2)
 library(reshape2)
-data<-read.csv("Resistomics\\data_corrected_age_season.csv",header=T)
-Igs<-data[,c(1:5)]
-Cyto_serum<-data[,c(6:8)]
-FACS<-data[,c(9:29)]
-Stim_cyto<-data[,c(30:144)]
-##correlation among stimulated cytokines, similar used to estimate other correlations.
-phylum_corr <-corr.test(Stim_cyto, use = "pairwise",
-                        method = "spearman",adjust="none")
-Corr_cyto_R<-phylum_corr$r
-Corr_cyto_P<-phylum_corr$p
-for (i in c(1:115)){Corr_cyto_P[,i]<-p.adjust(Corr_cyto_P[,i],method = "fdr",n=length(Corr_cyto_P[,i]))}
-#write.csv(Corr_cyto_P, 'p_corr_stim_cells.csv', quote = FALSE)
-#write.csv(Corr_cyto_R, 'r_corr_stim_cells.csv', quote = FALSE)
-Corr_cyto_R<-data.frame(Corr_cyto_R)
-Corr_cyto_P<-data.frame(Corr_cyto_P)
-Corr_cyto_R$X<-rownames(Corr_cyto_R)
-Corr_cyto_P$X<-rownames(Corr_cyto_P)
-Corr_cyto_R <- melt(Corr_cyto_R,id = c('X'))
-Corr_cyto_P <- melt(Corr_cyto_P,id = c('X'))
-Corr_cyto_R$value1<-Corr_cyto_P$value
-names(Corr_cyto_R)[names(Corr_cyto_R)=="value"]="R"
-names(Corr_cyto_R)[names(Corr_cyto_R)=="value1"]="P"
 
-anno<-read.csv("Resistomics\\anno.csv",header=T)
-Corr_cyto_R<-phylum_corr$r
-anno<-data.frame(anno[30:144,])
-anno<-anno[,-c(1:2)]
-rownames(anno) = colnames(Corr_cyto_R)
-library(pheatmap)
-newCols <- colorRampPalette(grDevices::rainbow(length(unique(anno$Type))))
-annoCol <- newCols(length(unique(anno$Type)))
-
-annoCol <-c("#B916A5","#0096DB","#9F59D6","#FF2C11","#0158A3")
-names(annoCol) <- unique(anno$Type)
-
-annoCol1 <-c("blue","green")
-names(annoCol1) <- unique(anno$Type1)
-
-annoCol2 <-c("#FFFC9B","#FF8907","#924900","#01B7FF","#3C5CD4","#44C84E")
-names(annoCol2) <- unique(anno$Type2)
-
-annoCol3 <-c("#FE2A77","#009393")
-names(annoCol3) <- unique(anno$Type3)
-annoCol4 <- list(Type = annoCol,Type1 = annoCol1,Type2 = annoCol2,Type3 = annoCol3)
-range <- max(abs(Corr_cyto_R))
-hm_1<-pheatmap(Corr_cyto_R,cluster_row = T,annotation_colors = annoCol4,annotation_row = anno,symm=T,breaks = seq(-range, range, length.out = 100),fontsize_row=4, fontsize_col=4,angle_col =90,fontsize_number = 6, number_color = "white", cellwidth =4, cellheight =4,cluster_col = T,color = colorRampPalette(c("blue", "white","red"))(100))
-
-##NMDS
-cell.cor <- cor(data[,c(30:144)], use = "pairwise.complete.obs", method = "spearman")
-d <- dist(cell.cor)
-ff1 <- cmdscale(d,eig=TRUE, k=2) # k is the number of dim
-ff2 <- as.data.frame(ff1$points)
-library(ggplot2)
-ff2$Type<-anno[,2]
-ff2$Type0<-anno[,4]
-ff2$Type1<-anno[,3]
-p<-ggplot(data=ff2,aes(x=V1,y=V2,group=Type))+ geom_point(aes(colour=Type1,shape=Type),size=2.5)+theme_bw() + theme(panel.grid =element_blank()) +
-  theme(panel.border = element_blank()) +scale_color_manual(values = pal <- c("#01B7FF","#3C5CD4","#44C84E","#FE2A77","#924900","#FF8907","red","red","blue"))+   ## 
-  theme(axis.line = element_line(colour = "black"))+labs(x="NMDS1",y="NMDS2",title ="",size=13)+ stat_ellipse(aes(color = Type1), level = 0.95, linetype = 2, show.legend = FALSE)+ scale_shape_manual(values = c(17,19))  #scale_shape_manual(values=c(18, 19))
-p
-library(ggExtra)
-ggMarginal(p, type = "density", groupColour = TRUE, groupFill = TRUE)
-library(PMCMR)
-library(PMCMRplus)
-All3$Type <- as.factor(All3$Type)
-ff2$Type1 <- as.factor(ff2$Type1)
-PMCMRplus::kwAllPairsDunnTest(ff2$V2,ff2$Type1,p.adjust.method ="fdr")
-result1<-c()
-for (i in c(1:2)){
-  list<-data.frame(colnames(ff2))
-  fit1<- wilcox.test(ff2[ff2$Type %in% c("WWBC"),c(list[i,])],ff2[ff2$Type %in% c("PBMC"),c(list[i,])],exact=F, paired = F)
-  result1<-rbind(result1,fit1$p.value) #fit1$p.value
-}
-#write.csv(result1, 'NMDS_PBMC_WWBC.csv', quote = FALSE)
-
+load("data_corrected_age_season.Rdata")
 ### variance explained using lm
 ### functions, eg., select features associated with PBMC_IL1B_LPS
 immpheno.assoc<-function(dat){
@@ -164,3 +91,107 @@ adonisResults$FDR.BH=p.adjust(adonisResults$pval, method = "BH")
 adonisResults$Significant="No"
 adonisResults$Significant[adonisResults$FDR.BH<0.05]="Yes"
 adonisResults <- subset(adonisResults,Significant=="Yes")
+
+###spearman correlation
+Igs<-data[,c(1:5)]
+Cyto_serum<-data[,c(6:8)]
+FACS<-data[,c(9:29)]
+Stim_cyto<-data[,c(30:144)]
+##correlation among stimulated cytokines, similar used to estimate other correlations.
+phylum_corr <-corr.test(Stim_cyto, use = "pairwise",
+                        method = "spearman",adjust="none")
+Corr_cyto_R<-phylum_corr$r
+Corr_cyto_P<-phylum_corr$p
+for (i in c(1:115)){Corr_cyto_P[,i]<-p.adjust(Corr_cyto_P[,i],method = "fdr",n=length(Corr_cyto_P[,i]))}
+#write.csv(Corr_cyto_P, 'p_corr_stim_cells.csv', quote = FALSE)
+#write.csv(Corr_cyto_R, 'r_corr_stim_cells.csv', quote = FALSE)
+Corr_cyto_R<-data.frame(Corr_cyto_R)
+Corr_cyto_P<-data.frame(Corr_cyto_P)
+Corr_cyto_R$X<-rownames(Corr_cyto_R)
+Corr_cyto_P$X<-rownames(Corr_cyto_P)
+Corr_cyto_R <- melt(Corr_cyto_R,id = c('X'))
+Corr_cyto_P <- melt(Corr_cyto_P,id = c('X'))
+Corr_cyto_R$value1<-Corr_cyto_P$value
+names(Corr_cyto_R)[names(Corr_cyto_R)=="value"]="R"
+names(Corr_cyto_R)[names(Corr_cyto_R)=="value1"]="P"
+
+anno<-read.csv("Resistomics\\anno.csv",header=T)
+Corr_cyto_R<-phylum_corr$r
+anno<-data.frame(anno[30:144,])
+anno<-anno[,-c(1:2)]
+rownames(anno) = colnames(Corr_cyto_R)
+library(pheatmap)
+newCols <- colorRampPalette(grDevices::rainbow(length(unique(anno$Type))))
+annoCol <- newCols(length(unique(anno$Type)))
+
+annoCol <-c("#B916A5","#0096DB","#9F59D6","#FF2C11","#0158A3")
+names(annoCol) <- unique(anno$Type)
+
+annoCol1 <-c("blue","green")
+names(annoCol1) <- unique(anno$Type1)
+
+annoCol2 <-c("#FFFC9B","#FF8907","#924900","#01B7FF","#3C5CD4","#44C84E")
+names(annoCol2) <- unique(anno$Type2)
+
+annoCol3 <-c("#FE2A77","#009393")
+names(annoCol3) <- unique(anno$Type3)
+annoCol4 <- list(Type = annoCol,Type1 = annoCol1,Type2 = annoCol2,Type3 = annoCol3)
+range <- max(abs(Corr_cyto_R))
+hm_1<-pheatmap(Corr_cyto_R,cluster_row = T,annotation_colors = annoCol4,annotation_row = anno,symm=T,breaks = seq(-range, range, length.out = 100),fontsize_row=4, fontsize_col=4,angle_col =90,fontsize_number = 6, number_color = "white", cellwidth =4, cellheight =4,cluster_col = T,color = colorRampPalette(c("blue", "white","red"))(100))
+
+##NMDS
+cell.cor <- cor(data[,c(30:144)], use = "pairwise.complete.obs", method = "spearman")
+d <- dist(cell.cor)
+ff1 <- cmdscale(d,eig=TRUE, k=2) # k is the number of dim
+ff2 <- as.data.frame(ff1$points)
+library(ggplot2)
+ff2$Type<-anno[,2]
+ff2$Type0<-anno[,4]
+ff2$Type1<-anno[,3]
+p<-ggplot(data=ff2,aes(x=V1,y=V2,group=Type))+ geom_point(aes(colour=Type1,shape=Type),size=2.5)+theme_bw() + theme(panel.grid =element_blank()) +
+  theme(panel.border = element_blank()) +scale_color_manual(values = pal <- c("#01B7FF","#3C5CD4","#44C84E","#FE2A77","#924900","#FF8907","red","red","blue"))+   ## 
+  theme(axis.line = element_line(colour = "black"))+labs(x="NMDS1",y="NMDS2",title ="",size=13)+ stat_ellipse(aes(color = Type1), level = 0.95, linetype = 2, show.legend = FALSE)+ scale_shape_manual(values = c(17,19))  #scale_shape_manual(values=c(18, 19))
+p
+library(ggExtra)
+ggMarginal(p, type = "density", groupColour = TRUE, groupFill = TRUE)
+library(PMCMR)
+library(PMCMRplus)
+All3$Type <- as.factor(All3$Type)
+ff2$Type1 <- as.factor(ff2$Type1)
+PMCMRplus::kwAllPairsDunnTest(ff2$V2,ff2$Type1,p.adjust.method ="fdr")
+result1<-c()
+for (i in c(1:2)){
+  list<-data.frame(colnames(ff2))
+  fit1<- wilcox.test(ff2[ff2$Type %in% c("WWBC"),c(list[i,])],ff2[ff2$Type %in% c("PBMC"),c(list[i,])],exact=F, paired = F)
+  result1<-rbind(result1,fit1$p.value) #fit1$p.value
+}
+#write.csv(result1, 'NMDS_PBMC_WWBC.csv', quote = FALSE)
+
+
+##
+library(qqman)
+library(data.table)
+path<-setwd("/scratch/users/s/h/shifang/Resistomics/GWAS/")
+fileNames = list.files(path=path,pattern="*.mlma", full.names = TRUE)
+lambda <- matrix(nrow =144 ,
+                 ncol = 2)
+lambda<-data.frame(lambda)
+for(i in 1:length(fileNames)){
+  gumlm<-fread(fileNames[i],header=T)
+  filename=paste(fileNames[i], ".tiff", sep="")
+  tiff(filename,width = 501, height = 330) # 
+  manhattan(gumlm,chr = "Chr", bp = "bp", p = "p", ylim=c(0, 15),suggestiveline = -log10(2.61780104712042E-06), genomewideline=-log10(1.30890052356021E-07),snp = "SNP",
+            col = c("gray10", "gray60"))
+  dev.off()
+  filename1=paste(fileNames[i], "_qq.tiff", sep="")
+  tiff(filename1,width = 501, height = 330)
+  qq(gumlm$p, xlim = c(0, 6), ylim = c(0,15), pch = 18, col = "blue4", cex = 1.5, las = 1)
+  dev.off()
+  ##lambda value
+  p_value=gumlm$p
+  z=qnorm(p_value/2)
+  lambda = round(median(z^2,na.rm=T)/0.454,3)
+  lambda[i,1]<-lambda
+  lambda[i,2]<-fileNames[i]
+}
+write.csv(lambda, 'lambda.csv', quote = FALSE)
