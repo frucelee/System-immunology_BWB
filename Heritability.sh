@@ -12,7 +12,7 @@
 ##Real estimate for GWAS heritability
 for i in $(seq 1 144);
 do
-gcta64 --grm /scratch/users/s/h/shifang/GCTA/test --pheno /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/T1_trait_new.txt --reml --qcovar /scratch/users/s/h/shifang/GCTA/GCTA_qcovar.txt --out h_${i%} --thread-num 10 --mpheno $i --covar /scratch/users/s/h/shifang/GCTA/GCTA_covar.txt
+gcta64 --grm /scratch/users/s/h/shifang/GCTA/test --pheno /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/T1_trait_new.txt --reml --qcovar /scratch/users/s/h/shifang/GCTA/GCTA_qcovar.txt --out h_${i%} --thread-num 10 --autosome-num 29 --mpheno $i --covar /scratch/users/s/h/shifang/GCTA/GCTA_covar.txt
 done
 
 ##Resampling 10 times
@@ -26,7 +26,7 @@ plink --bfile ${j%}_GCTA_ID --indiv-sort f /scratch/users/s/h/shifang/GCTA/h2/re
 
 gcta64 --bfile ${j%}_GCTA_ID_1 --autosome-num 29 --make-grm --out test
 
-gcta64 --grm test --pheno /scratch/users/s/h/shifang/GCTA/h2/resampling/raw/${j%}_pheno_.txt --reml --qcovar /scratch/users/s/h/shifang/GCTA/h2/resampling/raw/${j%}_GCTA_qcov.txt --out h_${i%} --thread-num 10 --mpheno $i --covar /scratch/users/s/h/shifang/GCTA/h2/resampling/raw/${j%}_GCTA_cov.txt
+gcta64 --grm test --pheno /scratch/users/s/h/shifang/GCTA/h2/resampling/raw/${j%}_pheno_.txt --reml --qcovar /scratch/users/s/h/shifang/GCTA/h2/resampling/raw/${j%}_GCTA_qcov.txt --out h_${i%} --autosome-num 29 --thread-num 10 --mpheno $i --covar /scratch/users/s/h/shifang/GCTA/h2/resampling/raw/${j%}_GCTA_cov.txt
 
 find . -type f -name "*.hsq" >111.txt
 find . -type f -name "*.hsq" -exec awk 'NR==5' {} \; > output.txt
@@ -40,7 +40,7 @@ done
 for j in $(seq 1 144);
 do for i in $(seq 1 1000); 
 do
-gcta64 --grm /scratch/users/s/h/shifang/GCTA/test --pheno /scratch/users/s/h/shifang/GCTA/h2/perm/raw/${j%}.txt --reml --qcovar /scratch/users/s/h/shifang/GCTA/GCTA_qcovar.txt --out h_${i%} --thread-num 10 --mpheno $i --covar /scratch/users/s/h/shifang/GCTA/GCTA_covar.txt 
+gcta64 --grm /scratch/users/s/h/shifang/GCTA/test --pheno /scratch/users/s/h/shifang/GCTA/h2/perm/raw/${j%}.txt --reml --qcovar /scratch/users/s/h/shifang/GCTA/GCTA_qcovar.txt --out h_${i%} --thread-num 10 --autosome-num 29 --mpheno $i --covar /scratch/users/s/h/shifang/GCTA/GCTA_covar.txt 
 done
 rm *.log
 find . -type f -name "*.hsq" -exec awk 'NR==5' {} \; > /scratch/users/s/h/shifang/GCTA/h2/perm/perm/perm_${j%}_output.txt
