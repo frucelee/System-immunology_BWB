@@ -14,7 +14,7 @@ do for i in $(seq 1 144);
 do
 plink --bfile /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/genotypes --keep resampling/${j%}_GCTA_ID.txt --make-bed --out ${j%}_GCTA_ID --chr-set 29 --allow-extra-chr
 plink --bfile ${j%}_GCTA_ID --indiv-sort f resampling/${j%}_GCTA_ID.txt --make-bed --out ${j%}_GCTA_ID_1 --chr-set 29 --allow-extra-chr
-gcta64 --mlma-loco --bfile ${j%}_GCTA_ID_1 --pheno resampling/${j%}_pheno_.txt --out mc_${i%}_loco_${j%} --thread-num 10 --qcovar resampling/${j%}_GCTA_qcov.txt --mpheno $i --covar resampling/${j%}_GCTA_cov.txt
+gcta64 --mlma-loco --bfile ${j%}_GCTA_ID_1 --pheno resampling/${j%}_pheno_.txt --out mc_${i%}_loco_${j%} --autosome-num 29 --thread-num 10 --qcovar resampling/${j%}_GCTA_qcov.txt --mpheno $i --covar resampling/${j%}_GCTA_cov.txt
 awk '$9<=5E-05' mc_${i%}_loco_${j%}.loco.mlma >mc/sig/mc_${i%}_loco_${j%}_sig.subset.txt
 #rm -r *bed *bim * fam * log *nosex *mlma
 done
