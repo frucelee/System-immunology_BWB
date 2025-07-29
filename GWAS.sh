@@ -38,7 +38,7 @@ cat output_file | while read id1
 do
 awk '{print $2,$4,$5,$6,$7,$8,$9}' /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/${id}.loco.mlma >condition.mlma
 awk -F '\t' -v OFS='\t' '{ $(NF+1) = 246; print }' condition.mlma >outfile
-gcta64  --bfile /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/genotypes  --chr ${id1} --thread-num 10 --maf 0.05 --cojo-file outfile --cojo-slct --out cojo/${id}_${id1} --cojo-p 1.30890052356021E-07
+gcta64  --bfile /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/genotypes  --chr ${id1} --autosome-num 29 --thread-num 10 --maf 0.05 --cojo-file outfile --cojo-slct --out cojo/${id}_${id1} --cojo-p 1.30890052356021E-07
 done
 rm -r chr.txt output_file condition.mlma
 done
