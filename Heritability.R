@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 # File: Heritability.R
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 library(data.table)
 library(ggplot2)
