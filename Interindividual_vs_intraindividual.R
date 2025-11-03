@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 # File: Interdividual vs intraindividual.R
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
+
 rm(list=ls())
 set.seed(1234)
 load("subset_T1T2.Rdata")
