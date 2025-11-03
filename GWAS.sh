@@ -6,8 +6,6 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=20000
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 ##Using a leave-one-chrom-out mixed linear model with GRM as the random variable and age and season as fixed effects.
 for i in $(seq 1 144); do
@@ -42,3 +40,4 @@ gcta64  --bfile /scratch/users/s/h/shifang/GWAS/immunophenotypes/T1/genotypes  -
 done
 rm -r chr.txt output_file condition.mlma
 done
+
