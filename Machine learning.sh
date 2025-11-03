@@ -6,8 +6,6 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=20000
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 for j in $(seq 1 10);
 do for i in $(seq 1 144);
@@ -54,3 +52,4 @@ sed -i 's/S3/S4/g' ${id} machine_learning.R
 Rscript machine_learning.R
 sed -i 's/S4/S5/g' ${id} machine_learning.R
 Rscript machine_learning.R
+
