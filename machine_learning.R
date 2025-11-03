@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 # File: machine_learning.R
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 library(data.table)
 library(purrrlyr)
