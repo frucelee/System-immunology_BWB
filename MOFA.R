@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 # File: MOFA.R
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 library("readxl") 
 library(GGally) 
