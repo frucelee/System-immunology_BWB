@@ -6,8 +6,6 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=10
 #SBATCH --mem-per-cpu=20000
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 ##Real estimate for GWAS heritability
 for i in $(seq 1 144);
@@ -46,3 +44,4 @@ rm *.log
 find . -type f -name "*.hsq" -exec awk 'NR==5' {} \; > /scratch/users/s/h/shifang/GCTA/h2/perm/perm/perm_${j%}_output.txt
 rm *.hsq
 done
+
