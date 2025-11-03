@@ -1,12 +1,9 @@
 #!/usr/bin/env Rscript
 # File: main.R
-# Author: Shifang Li
-# E-mail: fruceslee@gmail.com
 
 library(psych)
 library(ggplot2)
 library(reshape2)
-
 load("data_corrected_age_season.Rdata")
 ### variance explained using lm
 ### functions, eg., select features associated with PBMC_IL1B_LPS
